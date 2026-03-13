@@ -27,7 +27,7 @@ applyInitialTheme();
 
 // Start MSW only in dev
 async function enableMocking() {
-  if (import.meta.env.DEV) {
+  if (import.meta.env.DEV && import.meta.env.VITE_ENABLE_MSW === 'true') {
     const { worker } = await import("./mocks/browser");
     // Use default service worker path (public/mockServiceWorker.js)
     return worker.start({
