@@ -5,11 +5,27 @@ let users = [
   { id: '2', name: 'Jane Doe', email: 'jane@example.com', role: 'user' },
 ];
 
+const mockCredentials = (email) => ({
+  success: true,
+  data: {
+    token: 'mock-token',
+    user: { id: '1', email, role: 'admin', name: 'Admin User' },
+  },
+});
+
 export const handlers = [
   http.post('/api/auth/login', async ({ request }) => {
     const body = await request.json();
     if (body.email && body.password) {
-      return HttpResponse.json({ token: 'mock-token', user: { id: '1', email: body.email, role: 'admin', name: 'Admin User' }});
+      return HttpResponse.json(mockCredentials(body.email));
+    }
+    return new HttpResponse(JSON.stringify({ message: 'Invalid credentials' }), { status: 401 });
+  }),
+
+  http.post('/api/v1/auth/login', async ({ request }) => {
+    const body = await request.json();
+    if (body.email && body.password) {
+      return HttpResponse.json(mockCredentials(body.email));
     }
     return new HttpResponse(JSON.stringify({ message: 'Invalid credentials' }), { status: 401 });
   }),
@@ -19,7 +35,15 @@ export const handlers = [
     const id = String(Date.now());
     const newUser = { id, name: body.name, email: body.email, role: 'user' };
     users.push(newUser);
-    return HttpResponse.json(newUser, { status: 201 });
+    return HttpResponse.json({ success: true, data: { token: 'mock-token', user: newUser } }, { status: 201 });
+  }),
+
+  http.post('/api/v1/auth/register', async ({ request }) => {
+    const body = await request.json();
+    const id = String(Date.now());
+    const newUser = { id, name: body.name, email: body.email, role: 'user' };
+    users.push(newUser);
+    return HttpResponse.json({ success: true, data: { token: 'mock-token', user: newUser } }, { status: 201 });
   }),
 
   http.get('/api/users', () => HttpResponse.json(users)),
