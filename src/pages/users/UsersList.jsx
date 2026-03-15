@@ -13,7 +13,7 @@ export default function UsersList() {
       try {
         await delUser(deleteId).unwrap();
         setDeleteId(null);
-      } catch (err) {
+      } catch {
         alert('Failed to delete user');
       }
     }
