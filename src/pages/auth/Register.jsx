@@ -13,7 +13,7 @@ export default function Register() {
       await register(form).unwrap();
       navigate('/login');
       alert('Registration successful! Please login.');
-    } catch (err) {
+    } catch {
       alert('Registration failed');
     }
   };
