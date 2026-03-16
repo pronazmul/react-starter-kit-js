@@ -1,24 +1,33 @@
-import { useState } from 'react';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 import { useCreateUserMutation } from '../../api/userApi';
 import { useNavigate } from 'react-router-dom';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 import Button from '../../components/ui/Button';
 
+const userSchema = yup.object({
+  name: yup.string().trim().min(2, 'Name must be at least 2 characters').required('Name is required'),
+  email: yup.string().trim().email('Enter a valid email').required('Email is required'),
+  role: yup.string().oneOf(['user', 'admin']).required('Role is required'),
+});
+
 export default function UserCreate() {
-  const [form, setForm] = useState({ name: '', email: '', role: 'user' });
   const [createUser, { isLoading }] = useCreateUserMutation();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await createUser(form).unwrap();
-      navigate('/users');
-    } catch (err) {
-      alert('Failed to create user');
-    }
-  };
+  const formik = useFormik({
+    initialValues: { name: '', email: '', role: 'user' },
+    validationSchema: userSchema,
+    onSubmit: async (values, { setStatus }) => {
+      try {
+        await createUser(values).unwrap();
+        navigate('/users');
+      } catch {
+        setStatus('Failed to create user');
+      }
+    },
+  });
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -27,30 +36,40 @@ export default function UserCreate() {
         <p className="text-neutral-600 dark:text-neutral-400">Add a new user to the system</p>
       </div>
       <div className="border border-neutral-200 dark:border-neutral-800 rounded-lg p-6 bg-white dark:bg-neutral-800 shadow-sm">
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={formik.handleSubmit} className="space-y-5">
           <Input
             label="Name"
-            value={form.name}
-            onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
+            name="name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             required
           />
+          {formik.touched.name && formik.errors.name && <p className="text-xs text-red-500">{formik.errors.name}</p>}
           <Input
             label="Email"
             type="email"
-            value={form.email}
-            onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))}
+            name="email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             required
           />
+          {formik.touched.email && formik.errors.email && <p className="text-xs text-red-500">{formik.errors.email}</p>}
           <Select
             label="Role"
-            value={form.role}
-            onChange={(e) => setForm(f => ({ ...f, role: e.target.value }))}
+            name="role"
+            value={formik.values.role}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
           >
             <option value="user">User</option>
             <option value="admin">Admin</option>
           </Select>
+          {formik.touched.role && formik.errors.role && <p className="text-xs text-red-500">{formik.errors.role}</p>}
+          {formik.status && <p className="text-sm text-red-500">{formik.status}</p>}
           <div className="flex flex-wrap gap-2 pt-2">
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading || !formik.isValid}>
               {isLoading ? 'Creating...' : 'Create User'}
             </Button>
             <Button
