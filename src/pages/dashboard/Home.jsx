@@ -1,9 +1,11 @@
 import { useAppSelector } from '../../app/hooks';
 import { useGetUsersQuery } from '../../api/userApi';
+import { useGetTodosQuery } from '../../api/todoApi';
 
 export default function Home() {
   const { user } = useAppSelector(s => s.auth);
   const { data: users = [] } = useGetUsersQuery();
+  const { data: todos = [] } = useGetTodosQuery();
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -19,6 +21,10 @@ export default function Home() {
         <div className="p-5 border border-neutral-200 dark:border-neutral-800 rounded-lg bg-white dark:bg-neutral-800 shadow-sm hover:shadow-md transition-shadow">
           <h3 className="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-2">Welcome</h3>
           <p className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">{user?.name || user?.email || 'User'}</p>
+        </div>
+        <div className="p-5 border border-neutral-200 dark:border-neutral-800 rounded-lg bg-white dark:bg-neutral-800 shadow-sm hover:shadow-md transition-shadow">
+          <h3 className="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-2">Total Todos</h3>
+          <p className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">{todos.length}</p>
         </div>
         <div className="p-5 border border-neutral-200 dark:border-neutral-800 rounded-lg bg-white dark:bg-neutral-800 shadow-sm hover:shadow-md transition-shadow">
           <h3 className="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-2">Role</h3>
@@ -37,6 +43,12 @@ export default function Home() {
             className="px-4 py-2 bg-accent-500 text-white rounded-md hover:bg-accent-600 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-800 font-medium shadow-sm hover:shadow"
           >
             Manage Users
+          </a>
+          <a
+            href="/todos"
+            className="px-4 py-2 bg-accent-500 text-white rounded-md hover:bg-accent-600 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-800 font-medium shadow-sm hover:shadow"
+          >
+            Manage Todos
           </a>
         </div>
       </div>

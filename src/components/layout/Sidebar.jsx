@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 const navItems = [
   { path: '/', label: 'Dashboard', icon: '📊' },
   { path: '/users', label: 'Users', icon: '👥' },
+  { path: '/todos', label: 'Todos', icon: '✅' },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
