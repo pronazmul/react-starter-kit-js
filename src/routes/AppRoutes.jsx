@@ -6,6 +6,9 @@ import Home from '../pages/dashboard/Home';
 import UsersList from '../pages/users/UsersList';
 import UserCreate from '../pages/users/UserCreate';
 import UserEdit from '../pages/users/UserEdit';
+import TodosList from '../pages/todos/TodosList';
+import TodoCreate from '../pages/todos/TodoCreate';
+import TodoEdit from '../pages/todos/TodoEdit';
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
 
@@ -23,6 +26,9 @@ export default function AppRoutes() {
           <Route path="/users" element={<UsersList/>} />
           <Route path="/users/new" element={<UserCreate/>} />
           <Route path="/users/:id" element={<UserEdit/>} />
+          <Route path="/todos" element={<TodosList/>} />
+          <Route path="/todos/new" element={<TodoCreate/>} />
+          <Route path="/todos/:id" element={<TodoEdit/>} />
         </Route>
       </Route>
 
